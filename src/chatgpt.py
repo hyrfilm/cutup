@@ -1,16 +1,31 @@
+from typing import Union
+
 from rich._spinners import SPINNERS
 from rich import pretty
-from openai import OpenAI
-
 from . import config
 from .config import text_delimiter
 from .log import spinner, rlog
 
-client = OpenAI()
+try:
+    from openai import OpenAI
+except ImportError as e:
+    if "OPENAI_API_KEY" in e.msg:
+        rlog('[yellow]Environment OPENAI_API_KEY is not set.')
+    else:
+        raise e
+
+_client: Union[OpenAI|None] = None
+
+def lazy_initialize():
+    global _client
+    if _client:
+        return
+
+    from openai import OpenAI
+    _client = OpenAI()
 
 spinner_list = list(SPINNERS.keys())
 spinner_index = spinner_list.index("runner")  # Start with 'runner'
-
 
 def process_completion(completion, name):
     if not completion or not completion.choices[0].message.content:
@@ -38,6 +53,7 @@ def process_completion(completion, name):
 
 def get_chat_completion(user_context: str):
     global spinner_index
+    lazy_initialize()
 
     user_content = "\n".join([config.user_prompt, user_context])
     current_spinner = spinner_list[spinner_index]

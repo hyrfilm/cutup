@@ -6,7 +6,7 @@ from typing import Annotated
 
 from . import regexp_utils, config
 from .log import rlog
-from .openai import get_chat_completion
+from .chatgpt import get_chat_completion
 from .search import search_files
 
 
