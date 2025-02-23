@@ -1,37 +1,53 @@
 import os
+from pathlib import Path
 from typing import Union, List
 
 from pydantic_ai import Agent
-
 from pydantic_ai.settings import ModelSettings
-from rich import pretty
+from rich.padding import Padding
 
-from src.log import rlog, with_spinner
-from src.io import SourceFile
-from src import io
 from src import config
-
-
-if not os.getenv('OPENAI_API_KEY'):
-    rlog('[yellow]OPENAI_API_KEY not set - creating Agent stub')
-    agent = Agent()
-else:
-    rlog('[green]Creating OpenAI agent')
-    agent = Agent[SourceFile](config.model,
-                              result_type=List[SourceFile],
-                              system_prompt=config.system_prompt,
-                              model_settings=ModelSettings(temperature=config.temperature))
+from src import io
+from src.console import log, with_cycling_spinner, indented_log
 from src.io import SourceFile
+from src.io import create_timestamped_dir
 
-@with_spinner(style="dots8", message=f"Sending to {config.model}")
-def process(prompt: Union[List[str]|str]):
+agent = Agent()
+output_dir = Path("./")
+
+def initialize():
+    global agent, output_dir
+
+    if config.save_output:
+        output_dir = create_timestamped_dir(config.cwd)
+
+    if not os.getenv('OPENAI_API_KEY'):
+        log('[yellow]OPENAI_API_KEY not set - creating Agent stub')
+        agent = Agent()
+    else:
+        log('[green]Creating OpenAI agent')
+        agent = Agent[SourceFile](config.model,
+                                  result_type=List[SourceFile],
+                                  system_prompt=config.system_prompt,
+                                  model_settings=ModelSettings(temperature=config.temperature))
+
+@with_cycling_spinner("runner")
+def process(prompt: Union[List[str] | str], **kwargs):
+    amountDone = ("[dark green]#{done} / {total} files[/dark green]".format(**kwargs)) # make into helper, name log instead of rlog
+    indented_log(f"[magenta]Processing[/magenta] :robot: {amountDone}")
+
     if isinstance(prompt, list):
         user_prompt = "\n".join(prompt)
     else:
         user_prompt = prompt
 
     result = agent.run_sync(user_prompt)
-    pretty.pprint(result)
+    if not config.save_output:
+        indented_log(f"Output saving disabled - skipping writing files")
+        return
+
+    for file in result.data:
+        indented_log(f"\n\nWriting: '{file.path}'")
 
 
 @agent.tool_plain()
@@ -48,7 +64,7 @@ def readfile(path: str):
     Raises:
         ValueError: If the path does not exist or is not a file.
     """
-    rlog(f":robot: <== {path}")
+    indented_log(f"\t:robot: <== {path}")
     content = io.read_file(path)
     return content
 
@@ -68,6 +84,6 @@ def writefile(path: str, content: str) -> SourceFile:
     Raises:
         ValueError: If neither content nor SourceFile content is provided.
     """
-    rlog(f":robot: ==> {path}")
+    indented_log(f"\t:robot: ==> {path}")
     file = io.write_file(path, content)
     return file

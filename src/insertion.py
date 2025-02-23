@@ -3,7 +3,7 @@ import re
 from typing import List, Tuple
 
 from . import regexp_utils
-from .log import rlog
+from .console import log
 
 
 def clamp[T](value: T, minimum: T, maxmimum: T) -> T:
@@ -27,9 +27,9 @@ def insert_comment(files: List[pathlib.Path], pattern: str):
 
     for path in files:
         with path.open(mode="r", encoding="utf-8") as f:
-            rlog(f"{path}")
+            log(f"{path}")
             if not f.readable():
-                rlog(":warning:", "Not readable")
+                log(":warning:", "Not readable")
                 continue
             lines = f.readlines()
 
@@ -43,10 +43,10 @@ def insert_comment(files: List[pathlib.Path], pattern: str):
                 splice = "".join(segments)
                 color = colors[toggle]
                 msg = "".join([f"[{color}]", splice, f"/[{color}]"])
-                rlog(msg)
+                log(msg)
                 toggle = not toggle
 
-                rlog("-----------------------------------\n\n")
+                log("-----------------------------------\n\n")
 
 
 class InsertionHeuristics:

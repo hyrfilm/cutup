@@ -1,6 +1,5 @@
 [general]
-verbose = true
-write_reference = true
+verbose = false
 [search]
 extensions = [".js"]
 ignore = [
@@ -12,7 +11,8 @@ ignore = [
     "skivvy_tests", 
     "migrations",
     "eslintrc"]
-
+[output]
+save = false
 [agent]
 model = "gpt-4o-2024-11-20"
 temperature = 1

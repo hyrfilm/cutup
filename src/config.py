@@ -1,5 +1,6 @@
-from typing import TypedDict
 import tomllib  # Python 3.11+
+from pathlib import Path
+from typing import TypedDict
 
 
 class Config(TypedDict):
@@ -10,6 +11,7 @@ _config: Config = {
     "general": {},
     "search": {},
     "agent": {},
+    "output": {},
 }
 
 try:
@@ -20,15 +22,28 @@ except FileNotFoundError:
 
 extensions = frozenset(_config["search"].get("extensions", []))
 ignore = tuple(_config["search"].get("ignore", []))
-
 model = _config["agent"].get("model", "openai:gpt-o1")
 system_prompt = _config["agent"].get("system_prompt")
 temperature = _config["agent"].get("temperature", 1.0)
-
 verbose = _config["general"].get("verbose", False)
-write_reference = _config["general"].get("write_reference", True)
+save_output = _config["output"].get("save_output", True)
 
+repo = None
+cwd = None
 
+#TODO: Write verbose into config in the same way as all the other settings
 def set_verbose(flag: bool):
     global verbose
     verbose = flag
+
+
+def set_repo_dir(repo_dir: Path):
+    global repo
+    repo = repo_dir
+
+
+def set_cwd_dir(cwd_dir: Path):
+    global cwd
+    cwd = cwd_dir
+
+

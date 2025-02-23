@@ -43,3 +43,24 @@ def write_file(
     p = Path(path)
     p.write_text(content, encoding=_ENCODING)
     return SourceFile(path=str(path), content=content)
+
+
+import datetime
+
+
+def create_timestamped_dir(base_path: Path, dir_format: str = "%Y-%m-%d %H.%M") -> Path:
+    """
+    Creates a directory inside base_path with the current timestamp as the name.
+
+    Args:
+        base_path (str): The root path where the directory will be created.
+        dir_format (str): The datetime format string (default: "2025-02-23 20.14").
+
+    Returns:
+        str: The full path of the created directory.
+    """
+    timestamp = datetime.datetime.now().strftime(dir_format)
+    result_path = base_path.joinpath(timestamp)
+    result_path.mkdir(parents=True, exist_ok=True)
+
+    return result_path

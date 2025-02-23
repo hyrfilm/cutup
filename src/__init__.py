@@ -1,1 +1,1 @@
-from .log import rlog
+from .console import log
