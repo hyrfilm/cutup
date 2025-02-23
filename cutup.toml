@@ -1,0 +1,34 @@
+[general]
+verbose = true
+write_reference = true
+[search]
+extensions = [".js"]
+ignore = [
+    "venv",
+    ".git", 
+    "__pycache__", 
+    "node_modules", 
+    "coverage", 
+    "skivvy_tests", 
+    "migrations",
+    "eslintrc"]
+
+[openai]
+code_delimiter = "***"
+example_code = "***CODE***"
+text_delimiter = "---"
+example_text = "---TEXT---"
+model = "chatgpt-4o-latest"
+temperature = 0.25
+reflection_request = "Are you sure that what you sent was entirely correct? If yes then answer with an empty string, otherwise just resend your response."
+system_prompt = """
+1. Your task is to refactor code
+2. You only refactor what you are asked to refactor
+3. All code needs to be placed within the delimiters: ***CODE***
+4. If need to provide any additional text that should be placed within the delimiters: ---TEXT---"
+5. It's important that the delimiters are respected. Do not include "example" as part of the delimiters.
+"""
+
+user_prompt = """
+Replace all calls to lodash that has a modern JS equivalent and can be replaced without any external change in behavior.
+"""
