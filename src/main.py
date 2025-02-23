@@ -1,5 +1,3 @@
-import pathlib
-from idlelib.iomenu import encoding
 
 import typer
 
@@ -7,7 +5,7 @@ from pathlib import Path
 from typing import Annotated
 
 from . import regexp_utils, config
-from .log import rlog, spinner
+from .log import rlog
 from .openai import get_chat_completion
 from .search import search_files
 
@@ -31,7 +29,7 @@ def main(
         if config.write_reference:
             content = file.read_text()
             reference = Path(f"./{file.stem}{file.suffix}")
-            rlog(f'Writing original {file} -> {reference} as reference')
+            rlog(f"Writing original {file} -> {reference} as reference")
             reference.write_text(content)
 
         rlog(f"[orange]Sending[/orange] '{file}' to {config.model}...")
@@ -42,6 +40,7 @@ def main(
 
         return
 
+
 def write_result(completion, file):
     code, text, name = completion
     filename = Path(file.stem + f"_{name}.js")
@@ -49,5 +48,5 @@ def write_result(completion, file):
         rlog(f"[green]Writing[/green] '{file}' to '{file.name}' :sparkles:...")
         filename.write_text(code, encoding="utf-8")
     if text:
-        rlog(f"[blink]Annotation:[/blink]")
+        rlog("[blink]Annotation:[/blink]")
         rlog(text)

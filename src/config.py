@@ -6,10 +6,17 @@ class Config(TypedDict):
     str: any
 
 
-_config: Config = {}
+_config: Config = {
+    "general": {},
+    "search": {},
+    "openai": {},
+}
 
-with open("./pyfactor.toml", "rb") as f:
-    _config = tomllib.load(f)
+try:
+    with open("./cutup.toml", "rb") as f:
+        _config = tomllib.load(f)
+except FileNotFoundError:
+    print("No cutup.toml configuration found - using defaults.")
 
 extensions = frozenset(_config["search"].get("extensions", []))
 ignore = tuple(_config["search"].get("ignore", []))
@@ -25,8 +32,7 @@ reflection_request = _config["openai"].get("reflection_request")
 verbose = _config["general"].get("verbose", False)
 write_reference = _config["general"].get("write_reference", True)
 
+
 def set_verbose(flag: bool):
     global verbose
     verbose = flag
-
-

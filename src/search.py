@@ -1,4 +1,3 @@
-import re
 import typing
 from pathlib import Path
 from re import Pattern

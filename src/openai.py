@@ -1,16 +1,16 @@
-import random
 from rich._spinners import SPINNERS
 from rich import pretty
 from openai import OpenAI
 
 from . import config
-from .config import text_delimiter, reflection_request
+from .config import text_delimiter
 from .log import spinner, rlog
 
 client = OpenAI()
 
 spinner_list = list(SPINNERS.keys())
 spinner_index = spinner_list.index("runner")  # Start with 'runner'
+
 
 def process_completion(completion, name):
     if not completion or not completion.choices[0].message.content:
@@ -57,8 +57,10 @@ def get_chat_completion(user_context: str):
     stop_spinner()
 
     if config.reflection_request:
-        rlog('[blink]:thinking_face: Sending reflection request :thinking_face:[/blink]')
-        stop_spinner = spinner('balloon')
+        rlog(
+            "[blink]:thinking_face: Sending reflection request :thinking_face:[/blink]"
+        )
+        stop_spinner = spinner("balloon")
 
         reflection = client.chat.completions.create(
             model=config.model,
@@ -69,14 +71,12 @@ def get_chat_completion(user_context: str):
         )
         stop_spinner()
 
-
     if config.verbose:
         rlog("default answer:\n")
         pretty.pprint(completion)
     if config.reflection_request:
         rlog("reflected answer:\n")
         pretty.pprint(reflection)
-
 
     results = []
     results.append(process_completion(completion, name="default"))

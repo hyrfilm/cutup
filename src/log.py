@@ -1,4 +1,3 @@
-import asyncio
 import time
 import typing
 from threading import Thread
@@ -6,7 +5,6 @@ from threading import Thread
 from rich import print as rprint
 from rich.live import Live
 from rich.spinner import Spinner
-from rich.status import Status
 
 
 def rlog(*s: str):

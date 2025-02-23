@@ -1,5 +1,5 @@
 [project]
-name = "pyfactor"
+name = "cutup"
 version = "0.1.0"
 description = "Add your description here"
 readme = "README.md"
@@ -14,3 +14,6 @@ dependencies = [
     "ruff>=0.9.6",
     "typer>=0.15.1",
 ]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
