@@ -1,5 +1,6 @@
 from typing import Union
 from pathlib import Path
+import datetime
 
 from openai import BaseModel
 
@@ -44,8 +45,6 @@ def write_file(
     p.write_text(content, encoding=_ENCODING)
     return SourceFile(path=str(path), content=content)
 
-
-import datetime
 
 
 def create_timestamped_dir(base_path: Path, dir_format: str = "%Y-%m-%d %H.%M") -> Path:

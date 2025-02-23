@@ -4,7 +4,6 @@ from typing import Union, List
 
 from pydantic_ai import Agent
 from pydantic_ai.settings import ModelSettings
-from rich.padding import Padding
 
 from src import config
 from src import io
@@ -48,6 +47,7 @@ def process(prompt: Union[List[str] | str], **kwargs):
 
     for file in result.data:
         indented_log(f"\n\nWriting: '{file.path}'")
+        io.write_file(output_dir / file.name, file.content)
 
 
 @agent.tool_plain()
