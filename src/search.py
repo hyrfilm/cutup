@@ -5,19 +5,18 @@ from typing import List, Set
 from . import config
 
 from . import regexp_utils
-from .log import rlog, spinner
+from .log import rlog, with_spinner
 
 
-def search_files(pattern: str, path: Path, verbose: bool) -> List[Path]:
+@with_spinner(style="line")
+def search_files(pattern: str, path: Path) -> List[Path]:
     rlog(f"Searching for '{pattern}' in {path}...")
-    stop_spinner = spinner()
     files = pattern_search(
         pattern, path, extensions=config.extensions, ignore=config.ignore
     )
-    stop_spinner()
     rlog(f"Found {len(files)} files.")
 
-    if verbose:
+    if config.verbose:
         for i, path in enumerate(files, start=1):
             rlog(f"{i}. ", str(path))
     return files
