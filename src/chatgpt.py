@@ -10,11 +10,12 @@ try:
     from openai import OpenAI
 except ImportError as e:
     if "OPENAI_API_KEY" in e.msg:
-        rlog('[yellow]Environment OPENAI_API_KEY is not set.')
+        rlog("[yellow]Environment OPENAI_API_KEY is not set.")
     else:
         raise e
 
-_client: Union[OpenAI|None] = None
+_client: Union[OpenAI | None] = None
+
 
 def lazy_initialize():
     global _client
@@ -22,10 +23,13 @@ def lazy_initialize():
         return
 
     from openai import OpenAI
+
     _client = OpenAI()
+
 
 spinner_list = list(SPINNERS.keys())
 spinner_index = spinner_list.index("runner")  # Start with 'runner'
+
 
 def process_completion(completion, name):
     if not completion or not completion.choices[0].message.content:

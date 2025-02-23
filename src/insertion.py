@@ -23,7 +23,6 @@ def clamp[T](value: T, minimum: T, maxmimum: T) -> T:
 
 
 def insert_comment(files: List[pathlib.Path], pattern: str):
-    comment = f"/* ACHTUNG! Nearby you can usage of {pattern} */"
     decider = InsertionHeuristics()
 
     for path in files:

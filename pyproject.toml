@@ -9,6 +9,7 @@ dependencies = [
     "blinker>=1.9.0",
     "mypy>=1.15.0",
     "openai>=1.63.2",
+    "pydantic-ai>=0.0.24",
     "pytest>=8.3.4",
     "rich>=13.9.4",
     "ruff>=0.9.6",
