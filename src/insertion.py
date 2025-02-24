@@ -21,6 +21,47 @@ def clamp[T](value: T, minimum: T, maxmimum: T) -> T:
         return maxmimum
     return value
 
+def split_rows_by_delimiter(all_rows: list[str], delimiter: str) -> list[list[str]]:
+    """
+    Splits rows of text into sections based on a delimiter pattern. Each section 
+    begins with a line containing the delimiter.
+
+    Example:
+        rows = [
+            "Header text",
+            "# Chapter 1",
+            "Some content",
+            "More content",
+            "# Chapter 2",
+            "Next section"
+        ]
+        sections = split_rows_by_delimiter(rows, "# Chapter")
+        # Returns: [
+        #   ["# Chapter 1", "Some content", "More content"],
+        #   ["# Chapter 2", "Next section"]
+        # ]
+
+    Use cases:
+        - Breaking up text files by section headers
+        - Splitting documentation by markers
+        - Parsing structured text files
+        - Extracting content between known delimiters
+
+    Args:
+        all_rows (list[str]): Lines of text to split
+        delimiter (str): Text pattern that marks the start of each section
+
+    Returns:
+        list[list[str]]: List of sections, where each section is a list of rows
+    """
+    delimiter_positions = [
+        row_nr for row_nr, row_data in enumerate(all_rows) 
+        if delimiter in row_data
+    ]
+    sections = split_at(all_rows, delimiter_positions)
+    cleaned_sections = [section for section in sections if any(delimiter in row for row in section)]
+    return cleaned_sections
+
 
 def insert_comment(files: List[pathlib.Path], pattern: str):
     decider = InsertionHeuristics()
