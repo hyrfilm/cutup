@@ -3,7 +3,7 @@ import re
 from typing import List, Tuple
 
 from . import regexp_utils
-from .console import log
+from . console import log
 
 
 def clamp[T](value: T, minimum: T, maxmimum: T) -> T:

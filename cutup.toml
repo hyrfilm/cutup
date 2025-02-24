@@ -1,5 +1,5 @@
 [general]
-verbose = false
+verbose = true
 [search]
 extensions = [".js"]
 ignore = [
@@ -12,14 +12,15 @@ ignore = [
     "migrations",
     "eslintrc"]
 [output]
-save = false
+save = true
 [agent]
 model = "gpt-4o-2024-11-20"
 temperature = 1
 system_prompt = """
 1. Your task is to refactor code
-2. You accomplish this by writing the refactored code to files.
-3. If you write to a file you must write entirety of the file.
-4. Only refactor what is asked for.
-5. A refactoring must never introduce additional side-effects or bugs.
+2. Always make sure to read through the files you are supposed to refactor before starting.
+3. You accomplish this by writing the refactored code to files.
+4. If you write to a file you must write entirety of the file.
+5. Only refactor what is asked for.
+6. A refactoring must never introduce additional side-effects or bugs.
 """

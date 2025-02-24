@@ -27,7 +27,12 @@ def _spinner_decorator(get_spinner, message: str, speed: float, refresh_rate: in
             spinner_name = get_spinner()
             console = Console()
 
-            with console.status(message, spinner=spinner_name, speed=speed, refresh_per_second=refresh_rate):
+            with console.status(
+                message,
+                spinner=spinner_name,
+                speed=speed,
+                refresh_per_second=refresh_rate,
+            ):
                 return func(*args, **kwargs)
 
         return wrapper
@@ -40,12 +45,16 @@ def with_spinner(style: str, message: str = "", speed=2.0, refresh_rate=24, inde
     return _spinner_decorator(lambda: style, message, speed, refresh_rate)
 
 
-def with_cycling_spinner(initial_spinner: str, message: str = "", speed=2.0, refresh_rate=24, indent=0):
+def with_cycling_spinner(
+    initial_spinner: str, message: str = "", speed=2.0, refresh_rate=24, indent=0
+):
     """Cycling spinner decorator that moves to the next available spinner each call."""
     global _spinner_index
 
     if initial_spinner not in _spinner_keys:
-        raise ValueError(f"Invalid spinner name '{initial_spinner}'. Available spinners: {', '.join(_spinner_keys)}")
+        raise ValueError(
+            f"Invalid spinner name '{initial_spinner}'. Available spinners: {', '.join(_spinner_keys)}"
+        )
 
     _spinner_index = _spinner_keys.index(initial_spinner)  # Set starting position
 
