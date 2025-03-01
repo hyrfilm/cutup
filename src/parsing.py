@@ -1,6 +1,7 @@
 import html2text
 from markdownify import markdownify as md
 
+
 def html_to_text(html: str) -> str:
     text_maker = html2text.HTML2Text()
     text_maker.ignore_links = True
@@ -15,9 +16,10 @@ def html_to_text(html: str) -> str:
     text_maker.wrap_links = False
     text_maker.wrap_list_items = False
     text_maker.wrap_tables = False
-    text_maker.decode_errors = 'ignore'
+    text_maker.decode_errors = "ignore"
     return text_maker.handle(html)
 
+
 def html_to_markdown(html: str) -> str:
-    #TODO: This will probably need tweaks
+    # TODO: This will probably need tweaks
     return md(html)

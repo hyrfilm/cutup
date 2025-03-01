@@ -5,21 +5,16 @@ from typing import Union, List
 from pydantic_ai import Agent
 from pydantic_ai.settings import ModelSettings
 
-from src import config
+from src import config, options
 from src import io
 from src.console import log, with_cycling_spinner, indented_log
-from src.io import SourceFile
-from src.io import create_timestamped_dir
+from src.io import SourceFile, create_timestamped_dir
 
 agent = None
-output_dir = Path("./")
 
 
 def initialize():
-    global agent, output_dir
-
-    if config.save_output:
-        output_dir = create_timestamped_dir(config.cwd)
+    global agent
 
     if not os.getenv("OPENAI_API_KEY"):
         log("[yellow]OPENAI_API_KEY not set - creating Agent stub")
@@ -33,42 +28,47 @@ def initialize():
             model_settings=ModelSettings(temperature=config.temperature),
         )
 
-    @agent.tool_plain
-    def readfile(path: str) -> str:
-        """
-        Reads the content of a file and returns a SourceFile object.
 
-        Args:
-            path (str): The path to the file.
+initialize()
 
-        Returns:
-            SourceFile: An object containing the file path and content.
 
-        Raises:
-            ValueError: If the path does not exist or is not a file.
-        """
-        indented_log(f":robot: <== {path}\t[cyan][read][/cyan]")
-        content = io.read_file(path)
-        return content
+@agent.tool_plain()
+def readfile(path: str) -> str:
+    """
+    Reads the content of a file and returns a SourceFile object.
 
-    @agent.tool_plain
-    def writefile(path: str, content: str) -> SourceFile:
-        """
-        Writes content to a file and returns a SourceFile object. Accepts either a path and content or a SourceFile object.
+    Args:
+        path (str): The path to the file.
 
-        Args:
-            path (path: str The file path to write to.
-            content (str: str): The content to write if a path is provided.
+    Returns:
+        SourceFile: An object containing the file path and content.
 
-        Returns:
-            SourceFile: An object containing the file path and content.
+    Raises:
+        ValueError: If the path does not exist or is not a file.
+    """
+    indented_log(f":robot: <== {path}\t[cyan][read][/cyan]")
+    content = io.read_file(path)
+    return content
 
-        Raises:
-            ValueError: If neither content nor SourceFile content is provided.
-        """
-        indented_log(f":robot: ==> {path}\t[orange][write][/orange]")
-        file = io.write_file(path, content)
-        return file
+
+@agent.tool_plain()
+def writefile(path: str, content: str) -> SourceFile:
+    """
+    Writes content to a file and returns a SourceFile object. Accepts either a path and content or a SourceFile object.
+
+    Args:
+        path (path: str The file path to write to.
+        content (str: str): The content to write if a path is provided.
+
+    Returns:
+        SourceFile: An object containing the file path and content.
+
+    Raises:
+        ValueError: If neither content nor SourceFile content is provided.
+    """
+    indented_log(f":robot: ==> {path}\t[orange][write][/orange]")
+    file = io.write_file(path, content)
+    return file
 
 
 @with_cycling_spinner("runner")
@@ -84,9 +84,11 @@ def process(prompt: Union[List[str] | str], **kwargs):
         user_prompt = prompt
 
     result = agent.run_sync(user_prompt)
-    if not config.save_output:
+    if not options.save_output():
         indented_log(f"Output saving disabled - skipping writing files")
         return
+
+    output_dir = create_timestamped_dir()
 
     for source_file in result.data:
         output_path = Path.joinpath(output_dir, Path(source_file.path).name)

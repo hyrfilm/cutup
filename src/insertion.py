@@ -3,7 +3,7 @@ import re
 from typing import List, Tuple
 
 from . import regexp_utils
-from . console import log
+from .console import log
 
 
 def clamp[T](value: T, minimum: T, maxmimum: T) -> T:
@@ -21,9 +21,10 @@ def clamp[T](value: T, minimum: T, maxmimum: T) -> T:
         return maxmimum
     return value
 
+
 def split_rows_by_delimiter(all_rows: list[str], delimiter: str) -> list[list[str]]:
     """
-    Splits rows of text into sections based on a delimiter pattern. Each section 
+    Splits rows of text into sections based on a delimiter pattern. Each section
     begins with a line containing the delimiter.
 
     Example:
@@ -55,11 +56,12 @@ def split_rows_by_delimiter(all_rows: list[str], delimiter: str) -> list[list[st
         list[list[str]]: List of sections, where each section is a list of rows
     """
     delimiter_positions = [
-        row_nr for row_nr, row_data in enumerate(all_rows) 
-        if delimiter in row_data
+        row_nr for row_nr, row_data in enumerate(all_rows) if delimiter in row_data
     ]
     sections = split_at(all_rows, delimiter_positions)
-    cleaned_sections = [section for section in sections if any(delimiter in row for row in section)]
+    cleaned_sections = [
+        section for section in sections if any(delimiter in row for row in section)
+    ]
     return cleaned_sections
 
 

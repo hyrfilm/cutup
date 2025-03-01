@@ -46,12 +46,14 @@ def write_file(
     return SourceFile(path=str(path), content=content)
 
 
-def create_timestamped_dir(base_path: Path, dir_format: str = "%Y-%m-%d %H.%M") -> Path:
+def create_timestamped_dir(
+    base_path: [Path, str] = "./", dir_format: str = "%Y-%m-%d %H.%M"
+) -> Path:
     """
     Creates a directory inside base_path with the current timestamp as the name.
 
-    Args:
-        base_path (str): The root path where the directory will be created.
+    Args: (both are optional)
+        base_path (str): Either current working dir or specified path
         dir_format (str): The datetime format string (default: "2025-02-23 20.14").
 
     Returns:
