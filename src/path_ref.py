@@ -4,7 +4,7 @@ import re
 from . import env_vars
 
 PATH_PREFIX = "path://"
-PATH_SEPARATOR = "/" # we're not using os.sep since it varies between platforms
+PATH_SEPARATOR = "/"  # we're not using os.sep since it varies between platforms
 VAR_PREFIX = "$"
 START_VAR = "{"
 END_VAR = "}"
@@ -35,7 +35,15 @@ def consume(s: str) -> Tuple[bool, str, str]:
     return False, "", s
 
 
+def is_ref(s: str) -> bool:
+    """Returns True if the string is a path_ref that needs to be resolved otherwise False."""
+    return PATH_PREFIX in s
+
+
 def resolve_path_ref(s: str) -> str:
+    if not is_ref(s):
+        return s
+
     path_ref = s
     # Handle path://
     match, matched_str, s = consume(s)

@@ -1,0 +1,62 @@
+Examples:
+1. A table read from tables.sql
+CREATE TABLE public.customercommunication (
+    id integer NOT NULL,
+    "createdAt" timestamp without time zone,
+    "updatedAt" timestamp without time zone,
+    facility integer NOT NULL,
+    name text
+);
+2. Convert to a TypeScript interface, and write it to interfaces.ts
+interface CustomerCommunication {
+    id: number;
+    createdAt: string;
+    updatedAt: string;
+    facility: number;
+    name?: string;
+};
+
+1. A table in tables.sql
+CREATE TABLE public.collectibletoyrarity (
+    id integer NOT NULL,
+    title text NOT NULL,
+    description text,
+    type text NOT NULL,
+    internal boolean DEFAULT false,
+    "details" json NOT NULL,
+    deleted timestamp without time zone,
+    "createdAt" timestamp without time zone,
+    "updatedAt" timestamp without time zone,
+    "internalNotes" text,
+    "discountForms" json DEFAULT '[]'::json,
+    reg_code character varying,
+    "isDefault" boolean DEFAULT false,
+    tags json DEFAULT '[]'::json
+);
+
+2. Written to interfaces.ts
+type JSONValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JSONValue[]
+  | { [key: string]: JSONValue };
+
+interface CollectibleToyRarity {
+  id: number;
+  title: string;
+  description?: string;
+  type: string;
+  internal: boolean;
+  details: JSONValue;
+  deleted?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  internalNotes?: string;
+  discountForms: JSONValue[];
+  regCode?: string;
+  isDefault: boolean;
+  tags: JSONValue[];
+}
+

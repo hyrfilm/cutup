@@ -63,9 +63,12 @@ def test_path_resolving():
 
 
 def test_raises_exception_if_failing_to_resolve():
+    ensure_env_vars(
+        ("cwd", "./"),
+        ("repo", "./"),
+    )
+
     with pytest.raises(UnresolvedPathError):
         resolve_path_ref("path://dude_where_is_my_file.txt")
-    with pytest.raises(UnresolvedPathError):
-        resolve_path_ref("path:/")  # incorrect path:// protocol
     with pytest.raises(UnresolvedPathError):
         resolve_path_ref("path://${var_does_not_exist}")

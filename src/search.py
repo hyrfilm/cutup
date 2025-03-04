@@ -2,6 +2,9 @@ import typing
 from pathlib import Path
 from re import Pattern
 from typing import List, Set
+
+from pygments.lexer import include
+
 from . import config
 
 from . import regexp_utils
@@ -12,11 +15,11 @@ from .console import log, with_spinner
 def search_files(pattern: str, path: Path) -> List[Path]:
     log(f"Searching for '{pattern}' in {path}...")
     files = pattern_search(
-        pattern, path, extensions=config.extensions, ignore=config.ignore
+        pattern, path, extensions=config.get_extensions(), ignore=config.get_ignore()
     )
     log(f"\nFound {len(files)} files.")
 
-    if config.verbose:
+    if config.get_verbose():
         for i, path in enumerate(files, start=1):
             log(f"{i}. ", str(path))
     return files
@@ -49,8 +52,11 @@ def pattern_search(
                 return True
         return False
 
-    filtered_files = [f for f in path.rglob("*") if not matches(f, ignore)]
-    filtered_files = [f for f in filtered_files if (f.suffix in extensions)]
+    filtered_files = [f for f in path.rglob("*")]
+    if ignore:
+        filtered_files = [f for f in filtered_files if not matches(f, ignore)]
+    if extensions:
+        filtered_files = [f for f in filtered_files if (f.suffix in extensions)]
 
     for file_path in filtered_files:
         # Skip if not a file

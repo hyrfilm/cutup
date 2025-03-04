@@ -1,5 +1,6 @@
 from src.insertion import split_at, split_rows_by_delimiter
 
+
 def test_basic_split():
     text = ["The", "quick", "brown", "fox", "jumps", "over", "lazy", "dog"]
     indices = [2, 5]
@@ -50,6 +51,7 @@ def test_out_of_range_indices(capsys):
     assert "Warning: Index -1 is out of range" in captured.out
     assert "Warning: Index 5 is out of range" in captured.out
     assert result == (text,)
+
 
 def test_basic_split():
     """Test basic splitting with a simple delimiter"""

@@ -22,7 +22,6 @@ def get_env_var(name: str, default=None) -> str:
 
 
 def print_env_vars():
-    print("Number of env vars: ", len(os.environ.items()))
     for key, value in os.environ.items():
         if key.startswith(ENV_PREFIX):
             print(f"{key}: {value}")

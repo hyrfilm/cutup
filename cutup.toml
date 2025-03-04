@@ -1,26 +1,29 @@
 [general]
-verbose = true
+verbose = false
 [search]
-extensions = [".js"]
+# only include listed extensions, if empty include all
+extensions = []
+# ignore paths listed here, if empty ignore none
 ignore = [
     "venv",
     ".git", 
     "__pycache__", 
-    "node_modules", 
-    "coverage", 
-    "skivvy_tests", 
-    "migrations",
-    "eslintrc"]
+    "node_modules",
+]
 [output]
-save = true
+# in addition to file operations also save the output separately
+save = false
 [agent]
 model = "gpt-4o-2024-11-20"
 temperature = 1
 system_prompt = """
 1. Your task is to refactor code
-2. Always make sure to read through the files you are supposed to refactor before starting.
-3. You accomplish this by writing the refactored code to files.
-4. If you write to a file you must write entirety of the file.
-5. Only refactor what is asked for.
-6. A refactoring must never introduce additional side-effects or bugs.
+2. You have two tools:
+    a) readfile(path: str) -> str
+    b) writefile(path: str, content: str) -> None
+3. Always make sure to read through the files you are supposed to refactor.
+4. Always write the result of the refactoring.
+5. If you write to a file you must write the entirety of the file.
+6. Only refactor what is asked for.
+7. A refactoring must never introduce additional side-effects or bugs.
 """
