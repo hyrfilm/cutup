@@ -28,21 +28,7 @@ temperature = _config["agent"].get("temperature", 1.0)
 verbose = _config["general"].get("verbose", False)
 save_output = _config["output"].get("save", True)
 
-repo = None
-cwd = None
-
-
 # TODO: Write verbose into config in the same way as all the other settings
 def set_verbose(flag: bool):
     global verbose
     verbose = flag
-
-
-def set_repo_dir(repo_dir: Path):
-    global repo
-    repo = repo_dir
-
-
-def set_cwd_dir(cwd_dir: Path):
-    global cwd
-    cwd = cwd_dir

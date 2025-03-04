@@ -1,7 +1,7 @@
 import requests
 from typing import Union
 from enum import Enum
-from .parsing import convert_html_to_plain_text, convert_html_to_markdown
+from parsing import html_to_text, html_to_markdown
 
 
 class SrcFormat(Enum):
@@ -35,9 +35,9 @@ def curl(
     if destination_format == DstFormat.AS_IS:
         return html_content
     elif destination_format == DstFormat.PLAIN:
-        return convert_html_to_plain_text(html_content)
+        return html_to_text(html_content)
     elif destination_format == DstFormat.MARKDOWN:
-        return convert_html_to_markdown(html_content)
+        return html_to_markdown(html_content)
     else:
         raise ValueError(
             "Unsupported destination format. Use 'as-is', 'plain', 'markdown', or 'json'."

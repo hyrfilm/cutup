@@ -1,9 +1,8 @@
 import os
-from pprint import pprint
 
 from pydantic_ai.models.test import TestModel
 
-from agent_tools import agent
+from src.agent_tools import agent
 
 
 def test_agent_tools():

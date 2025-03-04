@@ -1,11 +1,14 @@
 format:
-    black .
+    uv run black .
 
 lint:
-    ruff check .
-    mypy .
+    uv run ruff check .
+    unv run  mypy .
 
 test:
-    pytest
+    (cd tests && uv run pytest)
+
+clean:
+    find . -type f -name "*.pyc" -delete && uv cache clean && rm -rf .venv
 
 all: format lint test

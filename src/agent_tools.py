@@ -29,47 +29,47 @@ def initialize():
         )
 
 
+
+
+    @agent.tool_plain()
+    def readfile(path: str) -> str:
+        """
+        Reads the content of a file and returns a SourceFile object.
+
+        Args:
+            path (str): The path to the file.
+
+        Returns:
+            SourceFile: An object containing the file path and content.
+
+        Raises:
+            ValueError: If the path does not exist or is not a file.
+        """
+        indented_log(f":robot: <== {path}\t[cyan][read][/cyan]")
+        content = io.read_file(path)
+        return content
+
+
+    @agent.tool_plain()
+    def writefile(path: str, content: str) -> SourceFile:
+        """
+        Writes content to a file and returns a SourceFile object. Accepts either a path and content or a SourceFile object.
+
+        Args:
+            path (path: str The file path to write to.
+            content (str: str): The content to write if a path is provided.
+
+        Returns:
+            SourceFile: An object containing the file path and content.
+
+        Raises:
+            ValueError: If neither content nor SourceFile content is provided.
+        """
+        indented_log(f":robot: ==> {path}\t[orange][write][/orange]")
+        file = io.write_file(path, content)
+        return file
+
 initialize()
-
-
-@agent.tool_plain()
-def readfile(path: str) -> str:
-    """
-    Reads the content of a file and returns a SourceFile object.
-
-    Args:
-        path (str): The path to the file.
-
-    Returns:
-        SourceFile: An object containing the file path and content.
-
-    Raises:
-        ValueError: If the path does not exist or is not a file.
-    """
-    indented_log(f":robot: <== {path}\t[cyan][read][/cyan]")
-    content = io.read_file(path)
-    return content
-
-
-@agent.tool_plain()
-def writefile(path: str, content: str) -> SourceFile:
-    """
-    Writes content to a file and returns a SourceFile object. Accepts either a path and content or a SourceFile object.
-
-    Args:
-        path (path: str The file path to write to.
-        content (str: str): The content to write if a path is provided.
-
-    Returns:
-        SourceFile: An object containing the file path and content.
-
-    Raises:
-        ValueError: If neither content nor SourceFile content is provided.
-    """
-    indented_log(f":robot: ==> {path}\t[orange][write][/orange]")
-    file = io.write_file(path, content)
-    return file
-
 
 @with_cycling_spinner("runner")
 def process(prompt: Union[List[str] | str], **kwargs):

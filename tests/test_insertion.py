@@ -1,3 +1,5 @@
+from src.insertion import split_at, split_rows_by_delimiter
+
 def test_basic_split():
     text = ["The", "quick", "brown", "fox", "jumps", "over", "lazy", "dog"]
     indices = [2, 5]
@@ -49,32 +51,25 @@ def test_out_of_range_indices(capsys):
     assert "Warning: Index 5 is out of range" in captured.out
     assert result == (text,)
 
-
-import pytest
-from src.insertion import split_at, split_rows_by_delimiter
-
 def test_basic_split():
     """Test basic splitting with a simple delimiter"""
-    rows = [
-        "Header",
-        "### Section 1",
-        "Content 1",
-        "### Section 2",
-        "Content 2"
-    ]
+    rows = ["Header", "### Section 1", "Content 1", "### Section 2", "Content 2"]
     result = split_rows_by_delimiter(rows, "###")
     assert len(result) == 2
     assert result[0] == ["### Section 1", "Content 1"]
     assert result[1] == ["### Section 2", "Content 2"]
 
+
 def test_empty_input():
     """Test with empty input"""
     assert split_rows_by_delimiter([], "any") == []
+
 
 def test_no_delimiter_found():
     """Test when delimiter isn't present"""
     rows = ["Line 1", "Line 2"]
     assert split_rows_by_delimiter(rows, "###") == []
+
 
 def test_multiple_sections():
     """Test with multiple sections including nested content"""
@@ -87,13 +82,14 @@ def test_multiple_sections():
         "- bullet point",
         "- another point",
         "# Chapter 3",
-        "Final text"
+        "Final text",
     ]
     result = split_rows_by_delimiter(rows, "# Chapter")
     assert len(result) == 3
     assert result[0] == ["# Chapter 1", "Some text", "More text"]
     assert result[1] == ["# Chapter 2", "- bullet point", "- another point"]
     assert result[2] == ["# Chapter 3", "Final text"]
+
 
 def test_delimiter_at_end():
     """Test with delimiter at the end of input"""
