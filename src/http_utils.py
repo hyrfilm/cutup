@@ -1,7 +1,7 @@
 import requests
 from typing import Union
 from enum import Enum
-from parsing import html_to_text, html_to_markdown
+from . parsing import html_to_text, html_to_markdown
 
 
 class SrcFormat(Enum):

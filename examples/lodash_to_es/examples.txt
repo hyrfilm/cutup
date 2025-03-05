@@ -1,0 +1,93 @@
+Example 1.
+BEFORE
+### `_.isNull(value)`
+
+
+Checks if `value` is `null`.
+console.log(_.isNull(null))
+// output: true
+console.log(_.isNull(void 0))
+// output: false
+
+AFTER
+### `_.isNull(value)`
+
+
+Checks if `value` is `null`.
+console.log(_.isNull(null))
+// output: true
+console.log(_.isNull(void 0))
+// output: false
+
+#### Native JS alternative
+// Native
+console.log(null === null);
+// output: true
+console.log(void 0 === null);
+// output: false
+
+
+
+
+
+Example 2.
+BEFORE
+### `_.join(array, [separator=','])`
+
+Converts all elements in `array` into a string separated by `separator`.
+
+var result = _.join(['one', 'two', 'three'], '--')
+console.log(result)
+// output: 'one--two--three'
+
+AFTER
+### `_.join(array, [separator=','])`
+Converts all elements in `array` into a string separated by `separator`.
+
+var result = _.join(['one', 'two', 'three'], '--')
+console.log(result)
+// output: 'one--two--three'
+
+#### Native JS alternative
+Note that a near-identical function in JS standard library can be used instead:
+
+var result = ['one', 'two', 'three'].join('--')
+console.log(result)
+// output: 'one--two--three'
+
+
+
+
+
+Example 3.
+BEFORE
+### `_.chunk(array, [size=1])`
+
+Creates an array of elements split into groups the length of `size`. If `array` can't be split evenly, the final chunk will be the remaining elements.
+
+_.chunk(['a', 'b', 'c', 'd'], 2);
+// => [['a', 'b'], ['c', 'd']]
+
+AFTER
+### `_.chunk(array, [size=1])`
+
+Creates an array of elements split into groups the length of `size`. If `array` can't be split evenly, the final chunk will be the remaining elements.
+
+_.chunk(['a', 'b', 'c', 'd'], 2);
+// => [['a', 'b'], ['c', 'd']]
+
+#### Native JS alternative
+Note that implementing this in modern JS is an alternative, but there isn't an equivalent function you can use.
+
+// Native
+const chunk = (input, size) => {
+  return input.reduce((arr, item, idx) => {
+    return idx % size === 0
+      ? [...arr, [item]]
+      : [...arr.slice(0, -1), [...arr.slice(-1)[0], item]];
+  }, []);
+};
+
+chunk(['a', 'b', 'c', 'd'], 2);
+// => [['a', 'b'], ['c', 'd']]
+

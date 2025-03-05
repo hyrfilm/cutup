@@ -14,7 +14,7 @@ ignore = [
 # in addition to file operations also save the output separately
 save = false
 [agent]
-model = "gpt-4o-2024-11-20"
+model = "gpt-4o-mini"
 temperature = 1
 system_prompt = """
 1. Your task is to refactor code
