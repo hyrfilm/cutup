@@ -1,3 +1,4 @@
+import time
 from functools import wraps
 from rich.console import Console
 from rich._spinners import SPINNERS

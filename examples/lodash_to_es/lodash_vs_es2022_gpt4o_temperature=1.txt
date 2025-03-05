@@ -1,0 +1,225 @@
+### `_.chunk(array, [size=1])`
+
+Creates an array of elements split into groups the length of `size`. If `array` can't be split evenly, the final chunk will be the remaining elements.
+
+#### Arguments
+1. `array`: (Array): The array to process.
+2. `[size=1]`: (number): The length of each chunk
+
+#### Returns
+(Array): Returns the new array of chunks.
+
+#### Example
+```javascript
+_.chunk(['a', 'b', 'c', 'd'], 2);
+// => [['a', 'b'], ['c', 'd']]
+```
+
+#### Native JS alternative
+Note that implementing this in modern JS is an alternative, but there isn't an equivalent function you can use.
+
+```javascript
+// Native
+const chunk = (input, size) => {
+  return input.reduce((arr, item, idx) => {
+    return idx % size === 0
+      ? [...arr, [item]]
+      : [...arr.slice(0, -1), [...arr.slice(-1)[0], item]];
+  }, []);
+};
+
+console.log(chunk(['a', 'b', 'c', 'd'], 2));
+// => [['a', 'b'], ['c', 'd']]
+```
+
+### `_.compact(array)`
+
+Creates an array with all falsey values removed. The values `false`, `null`, `0`, `""`, `undefined`, and `NaN` are falsey.
+
+#### Arguments
+1. `array`: (Array): The array to compact.
+
+#### Returns
+(Array): Returns the new array of truthy values.
+
+#### Example
+```javascript
+_.compact([0, 1, false, 2, '', 3]);
+// => [1, 2, 3]
+```
+
+#### Native JS alternative
+In modern JavaScript, a similar effect can be achieved using the built-in `Array.prototype.filter` method:
+
+```javascript
+// Native
+const compact = array => array.filter(Boolean);
+
+console.log(compact([0, 1, false, 2, '', 3]));
+// => [1, 2, 3]
+```
+
+### `_.concat(array, [values])`
+Creates a new array concatenating `array` with any additional arrays and/or values.
+
+#### Arguments
+1. `array` *(Array)*: The array to concatenate.
+2. `[values]` *(...*)*: The values to concatenate.
+
+#### Returns
+(Array): Returns the new concatenated array.
+
+#### Example
+```javascript
+const array = [1];
+const other = _.concat(array, 2, [3], [[4]]);
+console.log(other);
+// => [1, 2, 3, [4]]
+
+console.log(array);
+// => [1]
+```
+
+#### Native JS alternative
+Modern JavaScript has a native alternative using the `Array.prototype.concat` method:
+
+```javascript
+// Native
+const array = [1];
+const other = array.concat(2, [3], [[4]]);
+console.log(other);
+// => [1, 2, 3, [4]]
+
+console.log(array);
+// => [1]
+```
+
+### `_.difference(array, [values])`
+
+Creates an array of `array` values not included in the other given arrays using [SameValueZero](http://ecma-international.org/ecma-262/7.0/#sec-samevaluezero) for equality comparisons. The order and references of result values are determined by the first array. 
+
+#### Arguments
+1. `array` *(Array)*: The array to inspect.
+2. `[values]` *(...Array)*: The values to exclude.
+
+#### Returns
+(Array): Returns the new array of filtered values.
+
+#### Example
+```javascript
+console.log(_.difference([2, 1], [2, 3]));
+// => [1]
+```
+
+#### Native JS alternative
+In modern JavaScript, a similar effect can be achieved by using the `Array.prototype.filter` and `Array.prototype.includes` methods:
+
+```javascript
+// Native
+const difference = (array, values) => array.filter(x => !values.includes(x));
+
+console.log(difference([2, 1], [2, 3]));
+// => [1]
+```
+
+### `_.differenceBy(array, [values], [iteratee=_.identity])`
+This method is like [`_.difference`](#difference) except that it accepts `iteratee` which is invoked for each element of `array` and `values` to generate the criterion by which they're compared. The order and references of result values are determined by the first array. The iteratee is invoked with one argument.
+
+#### Arguments
+1. `array` *(Array)*: The array to inspect.
+2. `[values]` *(...Array)*: The values to exclude.
+3. `[iteratee=_.identity]` *(Function)*: The iteratee invoked per element.
+
+#### Returns
+(Array): Returns the new array of filtered values.
+
+#### Example
+```javascript
+console.log(_.differenceBy([2.1, 1.2], [2.3, 3.4], Math.floor));
+// => [1.2]
+```
+
+#### Native JS alternative
+In modern JavaScript, a similar effect can be achieved by mapping and filtering using `Array.prototype.map`, `Array.prototype.filter`, and `Array.prototype.includes`:
+
+```javascript
+// Native
+const differenceBy = (array, values, iteratee) => {
+  const transformedValues = values.map(iteratee);
+  return array.filter(x => !transformedValues.includes(iteratee(x)));
+};
+
+console.log(differenceBy([2.1, 1.2], [2.3, 3.4], Math.floor));
+// => [1.2]
+```
+
+### `_.differenceWith(array, [values], [comparator])`
+This method is like [`_.difference`](#difference) except that it accepts `comparator` which is invoked to compare elements of `array` to `values`. The order and references of result values are determined by the first array. The comparator is invoked with two arguments: *(arrVal, othVal)*.
+
+#### Arguments
+1. `array` *(Array)*: The array to inspect.
+2. `[values]` *(...Array)*: The values to exclude.
+3. `[comparator]` *(Function)*: The comparator invoked per element.
+
+#### Returns
+(Array): Returns the new array of filtered values.
+
+#### Example
+```javascript
+const array = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }];
+const values = [{ 'x': 1, 'y': 2 }];
+
+console.log(_.differenceWith(array, values, _.isEqual));
+// => [{ 'x': 2, 'y': 1 }]
+```
+
+#### Native JS alternative
+A similar outcome can be achieved using the `Array.prototype.filter` method in combination with a custom `comparator` function:
+
+```javascript
+// Native
+const differenceWith = (array, values, comparator) => {
+  return array.filter(arrItem => !values.some(valItem => comparator(arrItem, valItem)));
+};
+
+const array = [{ 'x': 1, 'y': 2 }, { 'x': 2, 'y': 1 }];
+const values = [{ 'x': 1, 'y': 2 }];
+
+console.log(differenceWith(array, values, (a, b) => a.x === b.x && a.y === b.y));
+// => [{ 'x': 2, 'y': 1 }]
+```
+
+### `_.drop(array, [n=1])`
+Creates a slice of `array` with `n` elements dropped from the beginning.
+
+#### Arguments
+1. `array` *(Array)*: The array to query.
+2. `[n=1]` *(number)*: The number of elements to drop.
+
+#### Returns
+(Array): Returns the slice of `array`.
+
+#### Example
+```javascript
+console.log(_.drop([1, 2, 3], 1));
+// => [2, 3]
+```
+
+```javascript
+console.log(_.drop([1, 2, 3], 2));
+// => [3]
+```
+
+#### Native JS alternative
+Modern JavaScript provides an easy way to achieve this using the `Array.prototype.slice` method:
+
+```javascript
+// Native
+const drop = (array, n = 1) => array.slice(n);
+
+console.log(drop([1, 2, 3], 1));
+// => [2, 3]
+
+console.log(drop([1, 2, 3], 2));
+// => [3]
+```
