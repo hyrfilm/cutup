@@ -1,5 +1,5 @@
 [general]
-verbose = false
+verbose = true
 [search]
 # only include listed extensions, if empty include all
 extensions = []
@@ -14,7 +14,7 @@ ignore = [
 # in addition to file operations also save the output separately
 save = false
 [agent]
-model = "gpt-4o-mini"
+model = "gpt-4o"
 temperature = 1
 system_prompt = """
 1. Your task is to refactor code

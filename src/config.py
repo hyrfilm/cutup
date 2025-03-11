@@ -1,13 +1,14 @@
 import tomllib
 from pathlib import Path
-from typing import TypedDict
+from pprint import pprint
+from typing import TypedDict, Union
 
 
 class Config(TypedDict):
     str: any
 
 
-_config = None
+_config:Union[Config, None] = None
 
 
 def read_config(path: Path = None):
@@ -33,6 +34,22 @@ def set_config(config: Config):
     global _config
     _config = config
 
+def update_config(keys: list[str], value: any):
+    global _config
+    new_config = _config.copy()
+    node = new_config
+
+    for key in keys[0:-1]:
+        node = node.get(key)
+    node[keys[-1]] = value
+    prv_config = _config
+    _config.update(new_config)
+    if get_verbose():
+            print("Config was dynamically updated.")
+            print("Previous config: ")
+            pprint(prv_config)
+            print("New config: ")
+            pprint(_config)
 
 def get_system_prompt():
     system_prompt = get_config()["agent"]["system_prompt"]

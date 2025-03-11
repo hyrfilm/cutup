@@ -2,6 +2,7 @@ import typer
 from pathlib import Path
 from typing import Annotated
 
+from .config import read_config
 from .env_vars import ENV_PREFIX, CWD, REPO
 from .agent_tools import create_agent
 from .script_util import run_script
@@ -15,6 +16,7 @@ def main(
     script: Annotated[Path, typer.Argument(envvar=CWD_ENV_VAR)],
     repo_root: Annotated[Path, typer.Argument(envvar=REPO_ENV_VAR)] = "./",
 ):
+    read_config()
     create_agent()
     run_script(script)
 
