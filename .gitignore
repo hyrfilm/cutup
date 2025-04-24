@@ -2,6 +2,9 @@
 .vscode/
 .idea/
 
+# CutUp specifc
+scripts/
+
 # Vagrant
 .vagrant/
 
