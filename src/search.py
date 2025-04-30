@@ -1,3 +1,4 @@
+import re
 import typing
 from pathlib import Path
 from re import Pattern
@@ -87,7 +88,12 @@ def pattern_search(
     matching_files = []
 
     if isinstance(pattern, str):
-        pattern = regexp_utils.compile(pattern)
+        # If the string looks like it's trying to use regex features, don't escape
+        if any(c in pattern for c in "|.*+?[](){}\\"):
+            pattern = re.compile(pattern)
+        else:
+            # Escape as literal word with boundaries
+            pattern = re.compile(rf"\b{re.escape(pattern)}\b")
 
     def matches(f: Path, to_ignore: tuple[str]):
         for s in to_ignore:
