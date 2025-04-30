@@ -3,12 +3,14 @@ from pathlib import Path
 from pprint import pprint
 from typing import TypedDict, Union
 
+from . import env_vars
+
 
 class Config(TypedDict):
     str: any
 
 
-_config:Union[Config, None] = None
+_config: Union[Config, None] = None
 
 
 def read_config(path: Path = None):
@@ -34,6 +36,7 @@ def set_config(config: Config):
     global _config
     _config = config
 
+
 def update_config(keys: list[str], value: any):
     global _config
     new_config = _config.copy()
@@ -45,11 +48,15 @@ def update_config(keys: list[str], value: any):
     prv_config = _config
     _config.update(new_config)
     if get_verbose():
-            print("Config was dynamically updated.")
-            print("Previous config: ")
-            pprint(prv_config)
-            print("New config: ")
-            pprint(_config)
+        print("Config was dynamically updated.")
+        print("Previous config: ")
+        pprint(prv_config)
+        print("New config: ")
+        pprint(_config)
+
+
+def get_project_dir():
+    return Path(get_config().get("general", {}).get("project_dir", env_vars.get_env_var(env_vars.REPO, "./")))
 
 def get_system_prompt():
     system_prompt = get_config()["agent"]["system_prompt"]

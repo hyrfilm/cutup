@@ -1,4 +1,6 @@
+import os
 from pathlib import Path
+from unittest import mock
 
 import pytest
 
@@ -17,6 +19,8 @@ class StubAgent:
         return "\n".join(self.messages)
 
 
+# makes sure we don't accidentally use environment variables from the shell
+@mock.patch.dict(os.environ, clear=True)
 def test_prompt_with_joke_instructions():
     agent = StubAgent()
     instructions = [
@@ -32,6 +36,8 @@ def test_prompt_with_joke_instructions():
     assert expected_output == agent.get_prompt()
 
 
+# makes sure we don't accidentally use environment variables from the shell
+@mock.patch.dict(os.environ, clear=True)
 def test_prompt_with_path_refs():
     agent = StubAgent()
     repo_file = Path("./fixtures/repo")
@@ -40,7 +46,7 @@ def test_prompt_with_path_refs():
     ensure_env_vars(("repo", str(repo_file)), ("cwd", str(script_file)))
 
     instructions = [
-        "I want you to read from the file path://${repo}/repo_file.txt and write it to path://${cwd}/script_file.txt"
+        "I want you to read from the file path://(repo)/repo_file.txt and write it to path://(cwd)/script_file.txt"
     ]
     prompt(instructions, send=agent.send)
 
@@ -48,6 +54,8 @@ def test_prompt_with_path_refs():
     assert "and write it to" in agent.get_prompt()
 
 
+# makes sure we don't accidentally use environment variables from the shell
+@mock.patch.dict(os.environ, clear=True)
 def test_prompt_with_invalid_path_refs():
     agent = StubAgent()
 

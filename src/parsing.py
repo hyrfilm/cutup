@@ -26,19 +26,22 @@ def html_to_markdown(html: str) -> str:
     # TODO: This will probably need tweaks
     return md(html)
 
+
 def slugify(s: str) -> str:
     def slugify_char(c: str) -> str:
-        if c in (string.ascii_lowercase + '0123456789'):
+        if c in (string.ascii_lowercase + "0123456789"):
             return c
-        return ''
+        return ""
+
     chars = [slugify_char(c) for c in s]
-    return ''.join(chars)
+    return "".join(chars)
+
 
 def s_l_u_g_i_f_y(s: str) -> str:
     def slugify_char(c: str) -> str:
         if c.isalnum():
             return c
-        return '-'
+        return "-"
 
     slug = [slugify_char(c) for c in s]
     return "-".join(slug)

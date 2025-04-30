@@ -1,8 +1,9 @@
 [general]
 verbose = true
+project_dir = "~/devroot/monorepo"
 [search]
 # only include listed extensions, if empty include all
-extensions = []
+extensions = [".js", ".ts"]
 # ignore paths listed here, if empty ignore none
 ignore = [
     "venv",
@@ -14,7 +15,7 @@ ignore = [
 # in addition to file operations also save the output separately
 save = false
 [agent]
-model = "gpt-4o"
+model = "o1"
 temperature = 1
 system_prompt = """
 1. Your task is to refactor code

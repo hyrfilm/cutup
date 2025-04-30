@@ -5,7 +5,6 @@ ENV_PREFIX = "CUTUP_"
 CWD = "CWD"
 REPO = "REPO"
 
-
 def normalize(name: str) -> str:
     name = name.upper()
     if not name.startswith(ENV_PREFIX):

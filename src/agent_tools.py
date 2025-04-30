@@ -99,7 +99,7 @@ def send_to_agent(user_prompt: str, **kwargs):
         indented_log(f"Output saving disabled - skipping writing files")
         return
 
-    #for data in result.data:
+    # for data in result.data:
     #    print(data)
 
     output_dir = io.create_timestamped_dir()

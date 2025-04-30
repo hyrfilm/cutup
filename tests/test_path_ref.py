@@ -1,4 +1,7 @@
+import os
 from os import getcwd, path
+from unittest import mock
+
 import pytest
 
 from src.env_vars import ensure_env_vars
@@ -23,12 +26,12 @@ def test_consume_prefix():
 
 
 def test_consume_variable():
-    success, matched, rest = consume("${my_variable}something else")
+    success, matched, rest = consume("(my_variable)something else")
     assert success == True
     assert matched == "my_variable"
     assert rest == "something else"
 
-    success, matched, rest = consume("${  my_variable   }")
+    success, matched, rest = consume("(  my_variable   )")
     assert success == True
     assert matched == "my_variable"
     assert rest == ""
@@ -39,6 +42,8 @@ def test_consume_variable():
     assert rest == "no variable here"
 
 
+# makes sure we don't accidentally use environment variables from the shell
+@mock.patch.dict(os.environ, clear=True)
 def test_path_resolving():
     script_dir = path.join(getcwd(), "fixtures/script")
     repo_dir = path.join(getcwd(), "fixtures/repo")
@@ -49,15 +54,15 @@ def test_path_resolving():
     )
 
     path1 = resolve_path_ref("path://script_file.txt")
-    path2 = resolve_path_ref("path://${cwd}/script_file.txt")
-    path3 = resolve_path_ref("path://${cwd}./script_file.txt")
-    path4 = resolve_path_ref("path://${cwd}../../fixtures/script/script_file.txt")
+    path2 = resolve_path_ref("path://(cwd)/script_file.txt")
+    path3 = resolve_path_ref("path://(cwd)./script_file.txt")
+    path4 = resolve_path_ref("path://(cwd)../../fixtures/script/script_file.txt")
 
     assert path1 == path2 == path3 == path4
 
-    path1 = resolve_path_ref("path://${repo}repo_file.txt")
-    path2 = resolve_path_ref("path://${repo}/repo_file.txt")
-    path3 = resolve_path_ref("path://${repo}./repo_file.txt")
+    path1 = resolve_path_ref("path://(repo)repo_file.txt")
+    path2 = resolve_path_ref("path://(repo)/repo_file.txt")
+    path3 = resolve_path_ref("path://(repo)./repo_file.txt")
 
     assert path1 == path2 == path3
 
@@ -71,4 +76,4 @@ def test_raises_exception_if_failing_to_resolve():
     with pytest.raises(UnresolvedPathError):
         resolve_path_ref("path://dude_where_is_my_file.txt")
     with pytest.raises(UnresolvedPathError):
-        resolve_path_ref("path://${var_does_not_exist}")
+        resolve_path_ref("path://(var_does_not_exist)")

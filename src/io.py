@@ -1,4 +1,7 @@
-from typing import Union
+import contextlib
+import os
+from contextlib import contextmanager
+from typing import Union, Iterator
 from pathlib import Path
 import datetime
 
@@ -42,3 +45,21 @@ def create_timestamped_dir(
 def touch(path: Union[str, Path]) -> None:
     p = Path(path)
     p.touch(exist_ok=True)
+
+# ── global “directory stack” ───────────────────────────────────────────
+_dir_stack: list[Path] = []          # LIFO, like the shell's pushd/popd
+
+@contextmanager
+def pushd(target: Union[str, Path]) -> Iterator[None]:
+    """
+    Temporarily switch the process cwd to *target* and push the
+    previous directory onto an internal stack.  On exit, pop and
+    restore the old cwd (even if an exception occurs).
+    """
+    target = Path(target).expanduser().resolve()
+    _dir_stack.append(Path.cwd())    # PUSH  ← current dir
+    os.chdir(target)                 #        switch to new dir
+    try:
+        yield
+    finally:
+        os.chdir(_dir_stack.pop())   # POP   ← restore last dir

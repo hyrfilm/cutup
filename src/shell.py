@@ -1,5 +1,6 @@
 import subprocess
 
+
 def shell(cmd):
     result = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     if result.returncode == 0:

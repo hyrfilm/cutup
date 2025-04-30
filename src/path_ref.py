@@ -3,12 +3,24 @@ from typing import Tuple
 import re
 from . import env_vars
 
+# TODO: add touch:// (requires path to exist but creates the file if it doesn't exist)
+# TODO: change from path:// to file:// ? Technically a directory can be specified with
+# TODO: path:// but if file:// added it could be validated as being a file and not a dir
 PATH_PREFIX = "path://"
+REFS = [PATH_PREFIX]
 PATH_SEPARATOR = "/"  # we're not using os.sep since it varies between platforms
-VAR_PREFIX = "$"
-START_VAR = "{"
-END_VAR = "}"
-VAR_REGEXP = re.compile(START_VAR + "(.+)" + END_VAR)
+
+# matches a variable declaration
+# groups the name of the variable, ignores spaces e.g.
+# eg "(my_var)" "( my_var )" -> my_var
+VAR_REGEXP = re.compile(
+    r"""
+\(      # match start of variable declartion
+(.+)    # match and group variable name 
+\)      # match end of variable declartion
+""",
+    re.VERBOSE,
+)
 
 
 class UnresolvedPathError(Exception):
@@ -22,16 +34,20 @@ def consume(s: str) -> Tuple[bool, str, str]:
     2) the part of the string that was consumed (if a variable was consumed this will be the variable name)
     3) the remaining string.
     """
-    if s.startswith(PATH_PREFIX):
-        s = s.removeprefix(PATH_PREFIX)
-        return True, PATH_PREFIX, s
-    if s.startswith(VAR_PREFIX):
-        s = s.removeprefix(VAR_PREFIX)
-        if VAR_REGEXP.match(s):
-            complete_match = VAR_REGEXP.match(s).group(0)
-            var_name = VAR_REGEXP.match(s).group(1)
-            s = s.removeprefix(complete_match)
-            return True, var_name.strip(), s
+    # consume variables if found
+    if VAR_REGEXP.match(s):
+        complete_match = VAR_REGEXP.match(s).group(0)
+        var_name = VAR_REGEXP.match(s).group(1)
+        s = s.removeprefix(complete_match)
+        return True, var_name.strip(), s
+
+    # consume refs if found
+    for prefix in REFS:
+        if s.startswith(prefix):
+            s = s.removeprefix(prefix)
+            return True, prefix, s
+
+    # nothing to consume
     return False, "", s
 
 
