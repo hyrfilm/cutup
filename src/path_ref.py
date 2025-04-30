@@ -7,7 +7,8 @@ from . import env_vars
 # TODO: change from path:// to file:// ? Technically a directory can be specified with
 # TODO: path:// but if file:// added it could be validated as being a file and not a dir
 PATH_PREFIX = "path://"
-REFS = [PATH_PREFIX]
+TOUCH_PREFIX = "touch://"
+REFS = [ PATH_PREFIX, TOUCH_PREFIX ]
 PATH_SEPARATOR = "/"  # we're not using os.sep since it varies between platforms
 
 # matches a variable declaration
@@ -53,7 +54,10 @@ def consume(s: str) -> Tuple[bool, str, str]:
 
 def is_ref(s: str) -> bool:
     """Returns True if the string is a path_ref that needs to be resolved otherwise False."""
-    return PATH_PREFIX in s
+    for ref in REFS:
+        if ref in s:
+            return True
+    return False
 
 
 def resolve_path_ref(s: str) -> str:
@@ -61,7 +65,7 @@ def resolve_path_ref(s: str) -> str:
         return s
 
     path_ref = s
-    # Handle path://
+
     match, matched_str, s = consume(s)
     if not match:
         raise UnresolvedPathError(f"Missing path protocol: {PATH_PREFIX} in {s}")
@@ -85,7 +89,14 @@ def resolve_path_ref(s: str) -> str:
     # Build path, make it absolute
     try:
         fullpath = Path(cwd) / Path(remaining)
-        resolved_path = fullpath.resolve(strict=True)
+        if TOUCH_PREFIX in matched_str:
+            resolved_path = fullpath.resolve(strict=False)
+            if not resolved_path.exists():
+                resolved_path.touch()
+        elif PATH_PREFIX in matched_str:
+            resolved_path = fullpath.resolve(strict=True)
+        else:
+            raise ValueError(f"Unknown ref type: {matched_str}")
     except OSError as e:
         raise UnresolvedPathError(
             f"Failed to resolve '{path_ref}' into {fullpath}: {e}"

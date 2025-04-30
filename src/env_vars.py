@@ -4,6 +4,7 @@ ENV_PREFIX = "CUTUP_"
 
 CWD = "CWD"
 REPO = "REPO"
+PROJECT = "PROJECT"
 
 def normalize(name: str) -> str:
     name = name.upper()
@@ -13,6 +14,7 @@ def normalize(name: str) -> str:
 
 
 def set_env_var(name: str, value: str):
+    print(name, " -> ", value)
     os.environ[normalize(name)] = value
 
 

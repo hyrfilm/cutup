@@ -1,5 +1,6 @@
 import os
 from os import getcwd, path
+from pathlib import Path
 from unittest import mock
 
 import pytest
@@ -65,6 +66,13 @@ def test_path_resolving():
     path3 = resolve_path_ref("path://(repo)./repo_file.txt")
 
     assert path1 == path2 == path3
+
+    new_file1 = Path(resolve_path_ref("touch://new_file.txt"))
+    new_file2 = Path(resolve_path_ref("touch://(cwd)/repo_file.txt"))
+    assert new_file1.exists() == new_file2.exists() == True
+
+    os.remove(new_file1)
+    os.remove(new_file2)
 
 
 def test_raises_exception_if_failing_to_resolve():
