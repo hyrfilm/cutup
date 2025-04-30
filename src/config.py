@@ -56,7 +56,7 @@ def update_config(keys: list[str], value: any):
 
 
 def get_project_dir():
-    return Path(get_config().get("general", {}).get("project_dir", env_vars.get_env_var(env_vars.REPO, "./")))
+    return Path(get_config().get("general", {}).get("project_dir", env_vars.get_env_var(env_vars.REPO, "./"))).expanduser().resolve()
 
 def get_system_prompt():
     system_prompt = get_config()["agent"]["system_prompt"]
