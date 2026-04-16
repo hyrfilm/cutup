@@ -1,0 +1,77 @@
+{
+  "schema_version": "1.0",
+  "overall_classification": "auto_resolve_review",
+  "overall_confidence": 0.81,
+  "summary": "Most conflicts appear to be mechanical overlap between a repo-wide rename and a local refactor. One conflict touches order-processing logic and should be reviewed after resolution.",
+  "conflicts": [
+    {
+      "id": "conflict-1",
+      "file_path": "src/ui/order/OrderPanel.tsx",
+      "symbols": ["OrderPanel", "customerId", "accountId"],
+      "classification": "auto_resolve",
+      "confidence": 0.91,
+      "branch_a_intent": "Refactor OrderPanel structure and helper usage without apparent behavior change.",
+      "branch_b_intent": "Rename customerId to accountId consistently across the repository.",
+      "branch_a_change_type": ["refactor_no_behavior_change"],
+      "branch_b_change_type": ["rename"],
+      "commutativity": {
+        "assessment": "likely_commutative",
+        "a_then_b": "likely_preserves_intent",
+        "b_then_a": "likely_preserves_intent",
+        "reason": "The rename appears mechanical and the refactor does not depend on the old identifier name."
+      },
+      "risk": {
+        "level": "low",
+        "factors": [
+          "UI code path",
+          "No apparent business-rule change"
+        ]
+      },
+      "validation": {
+        "typecheck": "passed",
+        "tests": "passed",
+        "lint": "passed",
+        "build": "passed",
+        "notes": "No integration-specific concerns identified."
+      },
+      "recommended_action": "apply_resolution",
+      "proposed_resolution_strategy": "Keep the refactored structure from branch A and replay the accountId rename from branch B throughout the resolved file.",
+      "explanation": "This appears to be a history-shape conflict rather than a semantic disagreement."
+    },
+    {
+      "id": "conflict-2",
+      "file_path": "src/order/processOrder.ts",
+      "symbols": ["processOrder", "retryPolicy"],
+      "classification": "auto_resolve_review",
+      "confidence": 0.68,
+      "branch_a_intent": "Refactor processOrder flow and extract retry-related helper logic.",
+      "branch_b_intent": "Rename customer-facing identifiers and update dependency usage after a package change.",
+      "branch_a_change_type": ["refactor_no_behavior_change"],
+      "branch_b_change_type": ["rename", "dependency_update"],
+      "commutativity": {
+        "assessment": "partially_commutative",
+        "a_then_b": "may_preserve_intent",
+        "b_then_a": "may_preserve_intent",
+        "reason": "The rename is likely mechanical, but the dependency change touches retry-related code in a sensitive path."
+      },
+      "risk": {
+        "level": "high",
+        "factors": [
+          "Order processing path",
+          "Retry semantics may be fragile",
+          "Dependency update present"
+        ]
+      },
+      "validation": {
+        "typecheck": "passed",
+        "tests": "partially_passed",
+        "lint": "passed",
+        "build": "passed",
+        "notes": "Unit tests passed, but no integration coverage for retry behavior."
+      },
+      "recommended_action": "apply_resolution_and_require_review",
+      "proposed_resolution_strategy": "Resolve the textual overlap by preserving the extracted helper structure, then adapt renamed identifiers and dependency calls carefully, followed by focused reviewer inspection of retry behavior.",
+      "explanation": "The conflict looks mostly mechanical, but the affected surface is risky enough that review is warranted."
+    }
+  ]
+}

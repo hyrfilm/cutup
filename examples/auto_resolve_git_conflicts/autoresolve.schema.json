@@ -1,0 +1,304 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/git-conflict-analysis.schema.json",
+  "title": "Git Conflict Analysis",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "overall_classification",
+    "overall_confidence",
+    "conflicts"
+  ],
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "overall_classification": {
+      "type": "string",
+      "enum": [
+        "auto_resolve",
+        "auto_resolve_review",
+        "propose_resolution",
+        "escalate_human"
+      ]
+    },
+    "overall_confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "summary": {
+      "type": "string"
+    },
+    "conflicts": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "$ref": "#/$defs/conflict"
+      }
+    }
+  },
+  "$defs": {
+    "conflict": {
+      "type": "object",
+      "required": [
+        "id",
+        "file_path",
+        "classification",
+        "confidence",
+        "branch_a_intent",
+        "branch_b_intent",
+        "commutativity",
+        "risk",
+        "recommended_action"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "file_path": {
+          "type": "string"
+        },
+        "symbols": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "classification": {
+          "type": "string",
+          "enum": [
+            "auto_resolve",
+            "auto_resolve_review",
+            "propose_resolution",
+            "escalate_human"
+          ]
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "branch_a_intent": {
+          "type": "string"
+        },
+        "branch_b_intent": {
+          "type": "string"
+        },
+        "branch_a_change_type": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "rename",
+              "move",
+              "formatting",
+              "import_reorder",
+              "generated_update",
+              "lockfile_update",
+              "list_append",
+              "refactor_no_behavior_change",
+              "behavior_change",
+              "validation_change",
+              "api_change",
+              "schema_change",
+              "delete",
+              "dependency_update",
+              "concurrency_change",
+              "unknown"
+            ]
+          }
+        },
+        "branch_b_change_type": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "rename",
+              "move",
+              "formatting",
+              "import_reorder",
+              "generated_update",
+              "lockfile_update",
+              "list_append",
+              "refactor_no_behavior_change",
+              "behavior_change",
+              "validation_change",
+              "api_change",
+              "schema_change",
+              "delete",
+              "dependency_update",
+              "concurrency_change",
+              "unknown"
+            ]
+          }
+        },
+        "commutativity": {
+          "type": "object",
+          "required": [
+            "assessment",
+            "a_then_b",
+            "b_then_a",
+            "reason"
+          ],
+          "properties": {
+            "assessment": {
+              "type": "string",
+              "enum": [
+                "likely_commutative",
+                "partially_commutative",
+                "non_commutative",
+                "unclear"
+              ]
+            },
+            "a_then_b": {
+              "type": "string",
+              "enum": [
+                "likely_preserves_intent",
+                "may_preserve_intent",
+                "likely_breaks_intent",
+                "unclear"
+              ]
+            },
+            "b_then_a": {
+              "type": "string",
+              "enum": [
+                "likely_preserves_intent",
+                "may_preserve_intent",
+                "likely_breaks_intent",
+                "unclear"
+              ]
+            },
+            "reason": {
+              "type": "string"
+            }
+          }
+        },
+        "risk": {
+          "type": "object",
+          "required": [
+            "level",
+            "factors"
+          ],
+          "properties": {
+            "level": {
+              "type": "string",
+              "enum": [
+                "low",
+                "medium",
+                "high"
+              ]
+            },
+            "factors": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "validation": {
+          "type": "object",
+          "properties": {
+            "typecheck": {
+              "type": "string",
+              "enum": [
+                "passed",
+                "failed",
+                "not_run",
+                "unknown"
+              ]
+            },
+            "tests": {
+              "type": "string",
+              "enum": [
+                "passed",
+                "failed",
+                "partially_passed",
+                "not_run",
+                "unknown"
+              ]
+            },
+            "lint": {
+              "type": "string",
+              "enum": [
+                "passed",
+                "failed",
+                "not_run",
+                "unknown"
+              ]
+            },
+            "build": {
+              "type": "string",
+              "enum": [
+                "passed",
+                "failed",
+                "not_run",
+                "unknown"
+              ]
+            },
+            "notes": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
+        "recommended_action": {
+          "type": "string",
+          "enum": [
+            "apply_resolution",
+            "apply_resolution_and_require_review",
+            "present_resolution_options",
+            "ask_humans_to_decide"
+          ]
+        },
+        "proposed_resolution_strategy": {
+          "type": "string"
+        },
+        "human_decision_needed": {
+          "type": "string"
+        },
+        "explanation": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "classification": {
+                "const": "escalate_human"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "human_decision_needed"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "classification": {
+                "enum": [
+                  "auto_resolve",
+                  "auto_resolve_review",
+                  "propose_resolution"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "proposed_resolution_strategy"
+            ]
+          }
+        }
+      ],
+      "additionalProperties": false
+    }
+  },
+  "additionalProperties": false
+}
