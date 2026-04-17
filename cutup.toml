@@ -1,9 +1,9 @@
 [general]
 verbose = true
-project_dir = "~/devroot/monorepo"
+project_dir = "/Users/jonasholmer/devroot/dummy_repo/skivvy"
 [search]
 # only include listed extensions, if empty include all
-extensions = [".js", ".ts"]
+extensions = []
 # ignore paths listed here, if empty ignore none
 ignore = [
     "venv",
